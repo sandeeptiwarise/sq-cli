@@ -17,12 +17,6 @@ class Mount10:
             self.server_info["secret_key"]
         )
 
-        for bucket in self.buckets:
-            try:
-                self.create_bucket(bucket)
-            except Exception as err:
-                print(err)
-
     def connect(self, server, access_key, secret_key):
         """
         :param server IP:Port of the Minio Server
