@@ -1,4 +1,4 @@
-from client import SQlient
+from sqlient import SQlient
 
 
 class SQCLI:
@@ -7,4 +7,4 @@ class SQCLI:
 
 
 if __name__ == '__main__':
-    client_michal = SQlient("Michal")
+    client_michal = SQlient("michal", "3.121.232.99:9000", "minioadmin", "miniooadmin")

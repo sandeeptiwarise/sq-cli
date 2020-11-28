@@ -4,21 +4,26 @@ import os
 
 
 class SQlient:
-    def __init__(self, name):
+    def __init__(self, name, server_ip, server_access_key, server_secret_key):
         self.name = name
         self.buckets = [f"bucket-1-{name}"]
-        self.mount10 = Mount10(self.name)
+        self.mount10 = Mount10(self.name, server_ip, server_access_key, server_secret_key)
         self.qrypt = Qrypt()
 
         home_dir = os.getenv("HOME")
-        self.local_dir_path = f"{home_dir}/synergy-quantum/{self.name}/"
-        try:
-            os.mkdir(self.local_dir_path)
-        except Exception as err:
-            print(err)
+        self.local_synergy_dir = f"{home_dir}/synergy-quantum"
+        self.local_user_dir = f"{self.local_synergy_dir}/{self.name}"
+        if not os.path.exists(self.local_synergy_dir):
+            os.mkdir(self.local_synergy_dir)
+        if not os.path.exists(self.local_user_dir):
+            os.mkdir(self.local_user_dir)
 
-        self.key_path = f"{self.local_dir_path}/key"
-        self.key = self.qrypt.generate_key(key_path=self.key_path)
+        self.key_path = f"{self.local_user_dir}/{self.name}.key"
+        if not os.path.exists(self.key_path):
+            self.key = self.qrypt.generate_key()
+            self.qrypt.save_key(self.key, self.key_path)
+        else:
+            self.key = self.qrypt.load_key(self.key_path)
 
         for bucket in self.buckets:
             try:
