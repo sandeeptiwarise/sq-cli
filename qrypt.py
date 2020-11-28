@@ -3,7 +3,7 @@ from cryptography.fernet import Fernet
 
 class Qrypt:
     def __init__(self, key):
-        self.key = key
+        self.key = Fernet(key)
 
     @classmethod
     def generate_key(cls):
@@ -29,14 +29,14 @@ class Qrypt:
     def encrypt_file(self, file):
         print('Reading File')
 
-        with open(file, "rb") as file:
-            file_data = file.read()
+        with open(file, "rb") as fp:
+            file_data = fp.read()
             encrypted_data = self.key.encrypt(file_data)
 
         print('Saving encrypted file')
 
-        with open(file, "wb") as file:
-            file.write(encrypted_data)
+        with open(file, "wb") as fp:
+            fp.write(encrypted_data)
 
     def decrypt_file(self, encrypted_file):
         """
@@ -53,8 +53,8 @@ class Qrypt:
 
         print(f"Saving decrypted file {encrypted_file}")
         # write the original files
-        with open(file, "wb") as file:
-            file.write(decrypted_data)
+        with open(encrypted_file, "wb") as fp:
+            fp.write(decrypted_data)
 
     def encrypt_message(self, message):
         print(f"Encrypting {message}")

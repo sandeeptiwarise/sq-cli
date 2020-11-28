@@ -22,7 +22,7 @@ class SQlient:
             self.key = Qrypt.generate_key()
             Qrypt.save_key(self.key, self.key_path)
         else:
-            self.key = self.qrypt.load_key(self.key_path)
+            self.key = Qrypt.load_key(self.key_path)
 
         self.qrypt = Qrypt(self.key)
 
