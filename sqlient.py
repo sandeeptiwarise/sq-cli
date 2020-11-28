@@ -6,7 +6,7 @@ import os
 class SQlient:
     def __init__(self, name):
         self.name = name
-        self.buckets = []
+        self.buckets = [f"bucket-1-{name}"]
         self.mount10 = Mount10(self.name)
         self.qrypt = Qrypt()
 
