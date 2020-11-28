@@ -7,4 +7,4 @@ class SQCLI:
 
 
 if __name__ == '__main__':
-    client_michal = SQlient("michal", "3.121.232.99:9000", "minioadmin", "miniooadmin")
+    client_michal = SQlient("michal", "3.121.232.99:9000", "minioadmin", "minioadmin")
