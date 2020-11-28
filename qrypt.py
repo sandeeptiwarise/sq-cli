@@ -55,6 +55,7 @@ class Qrypt:
         # write the original files
         with open(encrypted_file, "wb") as fp:
             fp.write(decrypted_data)
+        return decrypted_data
 
     def encrypt_message(self, message):
         print(f"Encrypting {message}")

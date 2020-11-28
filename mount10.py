@@ -48,5 +48,9 @@ class Mount10:
         except ResponseError as err:
             print(err)
 
-    def get_object(self):
-        pass
+    def get_object(self, bucket, remote_object_name, local_object_path):
+        try:
+            self.minio.fget_object(bucket, remote_object_name, local_object_path)
+        except ResponseError as err:
+            print(err)
+
