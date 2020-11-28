@@ -15,7 +15,7 @@ from minio.error import (ResponseError, BucketAlreadyOwnedByYou,
 
 # Make a bucket with the make_bucket API call.
 try:
-       minioClient.make_bucket("sq_mk_test_bucket", location="us-east-1")
+       minioClient.make_bucket("sq_test_bucket", location="us-east-1")
 except BucketAlreadyOwnedByYou as err:
        pass
 except BucketAlreadyExists as err:
