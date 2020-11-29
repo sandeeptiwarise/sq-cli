@@ -26,7 +26,24 @@ class Constants:
         "username": "",
         "server": "IP_ADDRESS:PORT",
         "access_key": "replace with access key",
-        "secret_key": "replace with secret key"
+        "secret_key": "replace with secret key",
+        "key_stores": [
+            {
+                "host": "",
+                "port": "",
+                "password": ""
+            },
+            {
+                "host": "",
+                "port": "",
+                "password": ""
+            },
+            {
+                "host": "",
+                "port": "",
+                "password": ""
+            }
+        ]
     }
     SQ_CLIENT_KEY = f"{SQ_CONFIG_DIR}/sq.key"
     SQ_CLIENT_SECURE_DATA_DIR = f"{SQ_CONFIG_DIR}/mount10"

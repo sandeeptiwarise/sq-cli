@@ -54,5 +54,5 @@ def get_client():
     logger.debug(f"Reading configuration from {Constants.SQ_CONFIG_FILE}")
     with open(Constants.SQ_CONFIG_FILE, 'r')as f:
         config = json.load(f)
-    client = SQlient(config['username'], config['server'], config['access_key'], config['secret_key'])
+    client = SQlient(config['username'], config['server'], config['access_key'], config['secret_key'], config['key_stores'])
     return client

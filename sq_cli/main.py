@@ -166,10 +166,14 @@ def ls():
         return
     client = get_client()
     bucket = client.buckets[0]
-    objects = client.mount10.list_object(bucket)
-    for obj in objects:
-        click.echo(f"- filename: {obj.object_name}, size: {obj.size}")
-
+    # objects = client.mount10.list_object(bucket)
+    # for obj in objects:
+    #     click.echo(f"- filename: {obj.object_name}, size: {obj.size}")
+    print(client.key_store_manager.stores)
+    client.key_store_manager.send_shares("testp", ["share1", "share2", "share3"])
+    shares = client.key_store_manager.retrieve_shares("testp")
+    for share in shares:
+        print(share)
 
 @cli.command()
 @click.argument('remote-file')
