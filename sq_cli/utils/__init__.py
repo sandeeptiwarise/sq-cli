@@ -1,11 +1,15 @@
+import json
 import logging
 
 import sq_cli
+from sq_cli.utils.constants import Constants
+
 
 class APIFilter(logging.Filter):
     """
     Filters API log level messages
     """
+
     def filter(self, record):
         return record.levelno == logging.API
 
@@ -35,3 +39,10 @@ def config_root_logger(verbosity, mode):
         root_logger.setLevel(logging.API)
         api_handler.addFilter(APIFilter())
         root_logger.addHandler(api_handler)
+
+
+def generate_configuration_template():
+    with open(Constants.SQ_CONFIG_FILE, 'w')as f:
+        config_json = json.dumps(Constants.SQ_CONFIG_FILE_TEMPLATE_DICT, indent=4)
+        f.write(config_json)
+

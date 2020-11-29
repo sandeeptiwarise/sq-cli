@@ -22,5 +22,10 @@ class Constants:
     USER_HOME_DIR = str(Path.home())
     SQ_CONFIG_DIR = f"{USER_HOME_DIR}/.synerguquantum"
     SQ_CONFIG_FILE = f"{SQ_CONFIG_DIR}/config"
+    SQ_CONFIG_FILE_TEMPLATE_DICT = {
+        "server": "IP_ADDRESS:PORT",
+        "access_key": "replace with access key",
+        "secret_key": "replace with secret key"
+    }
     SQ_CLIENT_KEY = f"{SQ_CONFIG_DIR}/sq.key"
     SQ_CLIENT_SECURE_DATA_DIR = f"{SQ_CONFIG_DIR}/mount10"

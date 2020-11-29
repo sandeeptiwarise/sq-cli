@@ -1,11 +1,12 @@
 import sys
 
 import click
-from sq_cli.utils import constants
-from sq_cli.__version__ import __version__
 import logging
+import os
 
-from sq_cli.utils import config_root_logger
+from sq_cli.qrypt import Qrypt
+from sq_cli.utils import config_root_logger, generate_configuration_template
+from sq_cli.utils.constants import Constants
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +15,8 @@ class Session:
     def __init__(self):
         self.config = {}
         self.verbose = False
-        self.ascii_art = constants.ascii_art
+        self.ascii_art = Constants.ASCII_VERSION_ART
+        self.is_configured = False
 
     def set_config(self, key, value):
         self.config[key] = value
@@ -24,6 +26,15 @@ class Session:
 
 pass_session = click.make_pass_decorator(Session)
 
+
+def validate_config(ctx):
+    if not ctx.obj.is_configured:
+        click.echo("SQ CLI is not configured. Please run $> sq config")
+        logger.error("Client Configuration FAILED!")
+        return False
+    else:
+        logging.debug("SQ CLI is properly configured")
+        return True
 
 @click.group()
 @click.option('--verbose', '-v',
@@ -48,12 +59,42 @@ def version(ctx):
 @cli.command()
 @click.pass_context
 def config(ctx):
-    print(ctx.obj.ascii_art)
+    # check if SQ_CONFIG_DIR exists, create if not
+    if os.path.exists(Constants.SQ_CONFIG_DIR):
+        logger.debug(f"SQ configuration directory exists: {Constants.SQ_CONFIG_DIR}")
+    else:
+        logger.debug(f"SQ configuration directory NOT FOUND: {Constants.SQ_CONFIG_DIR}")
+        logger.debug(f"Creating SQ configuration directory: {Constants.SQ_CONFIG_DIR}")
+        os.mkdir(Constants.SQ_CONFIG_DIR)
+
+    # check if user's key exists, generate new one otherwise
+    if os.path.exists(Constants.SQ_CLIENT_KEY):
+        logger.debug(f"SQ Key found: {Constants.SQ_CONFIG_DIR}")
+    else:
+        logger.debug(f"Generating new SQ Key and saving to {Constants.SQ_CONFIG_DIR}")
+        key = Qrypt.generate_key()
+        Qrypt.save_key(key, Constants.SQ_CLIENT_KEY)
+
+    # check if client config file exists, generate template otherwise
+    if os.path.exists(Constants.SQ_CONFIG_FILE):
+        logger.debug(f"Found Mount10 Configuration in the config file: {Constants.SQ_CONFIG_DIR}")
+    else:
+        logger.debug(f"Mount10 Configuration Not FOUND: {Constants.SQ_CONFIG_DIR}")
+        generate_configuration_template()
+        click.echo(f"Generated template of Mount10 configuration file {Constants.SQ_CONFIG_FILE}")
+        click.echo("Please fill out the configuration pararmeters in the template")
+        return
+    click.echo(Constants.ASCII_VERSION_ART)
+    click.echo("SQ CLI is properly configured")
+    ctx.obj.is_configured = True
 
 
 @cli.command()
-def upload():
-    pass
+@click.pass_context
+def upload(ctx):
+    is_valid = validate_config(ctx)
+    if not is_valid:
+        return
 
 
 @cli.command()
