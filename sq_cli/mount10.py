@@ -57,3 +57,8 @@ class Mount10:
         except ResponseError as err:
             logging.error(err)
 
+    def list_object(self, bucket):
+        print("Listing objects")
+        objects = self.minio.list_objects(bucket, recursive=True)
+        for object in objects:
+            print(f"{object.object_name} - {object.size}")

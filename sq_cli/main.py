@@ -161,8 +161,13 @@ def ls():
     """
     List remote directory structure
     """
-    pass
+    is_valid = validate_config()
+    if not is_valid:
+        return
+    print("Hello")
+    client = get_client()
 
+    client.mount10.list_object(client.buckets[0])
 
 @cli.command()
 def delete():

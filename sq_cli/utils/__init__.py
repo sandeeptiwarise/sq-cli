@@ -53,7 +53,6 @@ def generate_configuration_template():
 def get_client():
     logger.debug(f"Reading configuration from {Constants.SQ_CONFIG_FILE}")
     with open(Constants.SQ_CONFIG_FILE, 'r')as f:
-        print(f)
         config = json.load(f)
     client = SQlient(config['username'], config['server'], config['access_key'], config['secret_key'])
     return client
