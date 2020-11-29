@@ -1,7 +1,7 @@
 import sys
 
 import click
-
+from sq_cli.utils import constants
 from sq_cli.__version__ import __version__
 import logging
 
@@ -14,18 +14,7 @@ class Session:
     def __init__(self):
         self.config = {}
         self.verbose = False
-        self.ascii_art = f"""
-        
-  / ____|                                   / __ \                  | |                  
- | (___  _   _ _ __   ___ _ __ __ _ _   _  | |  | |_   _  __ _ _ __ | |_ _   _ _ __ ___  
-  \___ \| | | | '_ \ / _ \ '__/ _` | | | | | |  | | | | |/ _` | '_ \| __| | | | '_ ` _ \ 
-  ____) | |_| | | | |  __/ | | (_| | |_| | | |__| | |_| | (_| | | | | |_| |_| | | | | | |
- |_____/ \__, |_| |_|\___|_|  \__, |\__, |  \___\_\\__,_|\__,_|_| |_|\__|\__,_|_| |_| |_|
-          __/ |                __/ | __/ |                                               
-         |___/                |___/ |___/                                                
-
-                                                                  version: {__version__}
-    """
+        self.ascii_art = constants.ascii_art
 
     def set_config(self, key, value):
         self.config[key] = value
