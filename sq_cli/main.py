@@ -114,7 +114,6 @@ def clean():
 def upload(local_file):
     """
     Encrypt and Upload a local file to Mount10
-    :return:
     """
     is_valid = validate_config()
     if not is_valid:
@@ -137,7 +136,6 @@ def upload(local_file):
 def download(remote_file):
     """
     Download a file from Mount10 and save the decrypted copy locally
-    :return:
     """
     is_valid = validate_config()
     if not is_valid:
@@ -166,14 +164,14 @@ def ls():
         return
     client = get_client()
     bucket = client.buckets[0]
-    # objects = client.mount10.list_object(bucket)
-    # for obj in objects:
-    #     click.echo(f"- filename: {obj.object_name}, size: {obj.size}")
-    print(client.key_store_manager.stores)
-    client.key_store_manager.send_shares("testp", ["share1", "share2", "share3"])
-    shares = client.key_store_manager.retrieve_shares("testp")
-    for share in shares:
-        print(share)
+    objects = client.mount10.list_object(bucket)
+    for obj in objects:
+        click.echo(f"- filename: {obj.object_name}, size: {obj.size}")
+    # print(client.key_store_manager.stores)
+    # client.key_store_manager.send_shares("testp", ["share1", "share2", "share3"])
+    # shares = client.key_store_manager.retrieve_shares("testp")
+    # for share in shares:
+    #     print(share)
 
 @cli.command()
 @click.argument('remote-file')
@@ -189,6 +187,10 @@ def delete(remote_file):
 
     client.mount10.delete_object(bucket, remote_file)
 
+def cleanup():
+    """
+
+    """
 
 # @cli.command()
 # @click.pass_context

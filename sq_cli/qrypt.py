@@ -1,6 +1,6 @@
 from cryptography.fernet import Fernet
 import logging
-from secretsharing import SecretSharer
+from secretsharing import SecretSharer, PlaintextToHexSecretSharer
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +26,12 @@ class Qrypt:
 
     @classmethod
     def split_key(cls, key):
-        shares = SecretSharer.split_secret(key)
+        shares = PlaintextToHexSecretSharer.split_secret(key.decode(), 2, 3)
         return shares
 
     @classmethod
     def recombine_key(cls, shares):
-        SecretSharer.recover_secret(shares)
+        return PlaintextToHexSecretSharer.recover_secret(shares)
 
     @classmethod
     def encrypt_file(cls, key, local_file, encrypted_local_file):
