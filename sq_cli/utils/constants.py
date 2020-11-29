@@ -23,6 +23,7 @@ class Constants:
     SQ_CONFIG_DIR = f"{USER_HOME_DIR}/.synerguquantum"
     SQ_CONFIG_FILE = f"{SQ_CONFIG_DIR}/config"
     SQ_CONFIG_FILE_TEMPLATE_DICT = {
+        "username": "",
         "server": "IP_ADDRESS:PORT",
         "access_key": "replace with access key",
         "secret_key": "replace with secret key"

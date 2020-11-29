@@ -3,6 +3,9 @@ import logging
 
 import sq_cli
 from sq_cli.utils.constants import Constants
+from sq_cli.sqlient import SQlient
+
+logger = logging.getLogger(__name__)
 
 
 class APIFilter(logging.Filter):
@@ -46,3 +49,10 @@ def generate_configuration_template():
         config_json = json.dumps(Constants.SQ_CONFIG_FILE_TEMPLATE_DICT, indent=4)
         f.write(config_json)
 
+
+def get_client():
+    logger.debug(f"Reading configuration from {Constants.SQ_CONFIG_FILE}")
+    with open(Constants.SQ_CONFIG_FILE, 'r')as f:
+        config = json.load(f.read())
+    client = SQlient(config['name'], config['server'], config['access_key'], config['secret_key'])
+    return client

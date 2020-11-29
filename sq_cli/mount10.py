@@ -1,5 +1,8 @@
 from minio import ResponseError, Minio
 from minio.error import BucketAlreadyOwnedByYou, BucketAlreadyExists
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Mount10:

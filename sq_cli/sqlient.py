@@ -1,7 +1,9 @@
-from mount10 import Mount10
-from qrypt import Qrypt
+from sq_cli.mount10 import Mount10
+from sq_cli.qrypt import Qrypt
 import os
+import logging
 
+logger = logging.getLogger(__name__)
 
 class SQlient:
     def __init__(self, name, server_ip, server_access_key, server_secret_key):
@@ -30,4 +32,4 @@ class SQlient:
             try:
                 self.mount10.create_bucket(bucket)
             except Exception as err:
-                print(err)
+                logging.error(err)

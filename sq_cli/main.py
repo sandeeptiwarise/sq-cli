@@ -1,3 +1,4 @@
+import shutil
 import sys
 
 import click
@@ -5,7 +6,7 @@ import logging
 import os
 
 from sq_cli.qrypt import Qrypt
-from sq_cli.utils import config_root_logger, generate_configuration_template
+from sq_cli.utils import config_root_logger, generate_configuration_template, get_client
 from sq_cli.utils.constants import Constants
 
 logger = logging.getLogger(__name__)
@@ -28,13 +29,15 @@ pass_session = click.make_pass_decorator(Session)
 
 
 def validate_config():
-    if not os.path.exists(Constants.SQ_CONFIG_DIR) or not os.path.exists(Constants.SQ_CLIENT_KEY) or not os.path.exists(Constants.SQ_CONFIG_FILE):
+    if not os.path.exists(Constants.SQ_CONFIG_DIR) or not os.path.exists(Constants.SQ_CLIENT_KEY) or not os.path.exists(
+            Constants.SQ_CONFIG_FILE):
         click.echo("SQ CLI is not configured. Please run $> sq config")
         logger.error("Client Configuration FAILED!")
         return False
     else:
         logging.debug("SQ CLI is properly configured")
         return True
+
 
 @click.group()
 @click.option('--verbose', '-v',
@@ -92,36 +95,101 @@ def config(ctx):
     ctx.obj.is_configured = True
 
 
-@cli.command()
-@click.pass_context
-def upload(ctx):
-    is_valid = validate_config()
-    if not is_valid:
-        return
+@click.command()
+def clean():
+    """
+    Remove all configuration and data locally
+    """
+    logging.debug(f"Removing {Constants.SQ_CONFIG_DIR}")
+    try:
+        shutil.rmtree(Constants.SQ_CONFIG_DIR)
+    except:
+        click.echo(f"Error while deleting directory f{Constants.SQ_CONFIG_DIR}")
 
 
 @cli.command()
-@click.pass_context
-def download(ctx):
+@click.option('--local-file', '-f',
+              type=click.STRING,
+              required=True,
+              help="The file to be uploaded to Mount10"
+              )
+def upload(local_file):
+    """
+    Encrypt and Upload a local file to Mount10
+    :return:
+    """
     is_valid = validate_config()
     if not is_valid:
         return
+    # get client
+    client = get_client()
+    # encrypt file
+    logger.debug(f"Encrypting {local_file}")
+    key = client.key
+    filename = os.path.split(local_file)[-1]
+    encrypted_local_file = f"{local_file}.encrypted"
+    Qrypt.encrypt_file(key, local_file, encrypted_local_file)
+    # upload file
+    logger.debug(f"Uploading {local_file} as {filename}")
+    client.mount10.put_object(client.buckets[0], filename, encrypted_local_file)
 
 
 @cli.command()
-@click.pass_context
-def encrypt(ctx):
+@click.option('--remote-file', '-r',
+              type=click.STRING,
+              required=True,
+              help="The remote filename of the file to be downloaded"
+              )
+def download(remote_file):
+    """
+    Download a file from Mount10 and save the decrypted copy locally
+    :return:
+    """
     is_valid = validate_config()
     if not is_valid:
         return
+    client = get_client()
 
+    # download encrypted file
+    encrypted_local_file = f"{Constants.SQ_CLIENT_SECURE_DATA_DIR}/{remote_file}.encrypted"
+    decrypted_local_file = f"{Constants.SQ_CLIENT_SECURE_DATA_DIR}/{remote_file}"
+    logger.debug(f"Downloading encrypted file {remote_file} to {encrypted_local_file}")
+    client.mount10.get_object(client.buckets[0], remote_file, encrypted_local_file)
+
+    # decrypt file
+    logger.debug(f"Decrypting {encrypted_local_file} to {decrypted_local_file}")
+    key = client.key
+    Qrypt.decrypt_file(key, encrypted_local_file, decrypted_local_file)
+
+
+@cli.commmand()
+def ls():
+    """
+    List remote directory structure
+    :return:
+    """
 
 @cli.command()
-@click.pass_context
-def decrypt(ctx):
-    is_valid = validate_config()
-    if not is_valid:
-        return
+def delete():
+    """
+    Delete remote file
+    :return:
+    """
+
+# @cli.command()
+# @click.pass_context
+# def encrypt(ctx):
+#     is_valid = validate_config()
+#     if not is_valid:
+#         return
+#
+#
+# @cli.command()
+# @click.pass_context
+# def decrypt(ctx):
+#     is_valid = validate_config()
+#     if not is_valid:
+#         return
 
 
 # if __name__ == '__main__':

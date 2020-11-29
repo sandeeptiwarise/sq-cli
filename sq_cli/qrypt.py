@@ -1,5 +1,7 @@
 from cryptography.fernet import Fernet
+import logging
 
+logger = logging.getLogger(__name__)
 
 class Qrypt:
     def __init__(self, key):
@@ -20,48 +22,53 @@ class Qrypt:
         with open(f"{key_path}", "r") as key_file:
             return key_file.read()
 
-    def split_key(self):
+    @classmethod
+    def split_key(cls, key):
         pass
 
-    def recombine_key(self):
+    @classmethod
+    def recombine_key(cls):
         pass
 
-    def encrypt_file(self, file):
+    @classmethod
+    def encrypt_file(cls, key, local_file, encrypted_local_file):
         print('Reading File')
 
-        with open(file, "rb") as fp:
+        with open(local_file, "rb") as fp:
             file_data = fp.read()
-            encrypted_data = self.key.encrypt(file_data)
+            encrypted_data = key.encrypt(file_data)
 
         print('Saving encrypted file')
 
-        with open(file, "wb") as fp:
+        with open(encrypted_local_file, "wb") as fp:
             fp.write(encrypted_data)
 
-    def decrypt_file(self, encrypted_file):
+    @classmethod
+    def decrypt_file(cls, key, encrypted_local_file, decrypted_local_file):
         """
             Given a filename (str) and key (bytes), it decrypts the file and write it
         """
-        print(f"Reading Encrypted File {encrypted_file}")
-        with open(encrypted_file, "rb") as file:
+        print(f"Reading Encrypted File {encrypted_local_file}")
+        with open(encrypted_local_file, "rb") as file:
             # read the encrypted data
             encrypted_data = file.read()
-        print(f"Decrypting File {encrypted_file}")
+        print(f"Decrypting File {encrypted_local_file}")
 
         # decrypt data
-        decrypted_data = self.key.decrypt(encrypted_data)
+        decrypted_data = key.decrypt(encrypted_data)
 
-        print(f"Saving decrypted file {encrypted_file}")
+        print(f"Saving decrypted file {decrypted_local_file}")
         # write the original files
-        with open(encrypted_file, "wb") as fp:
+        with open(decrypted_local_file, "wb") as fp:
             fp.write(decrypted_data)
-        return decrypted_data
 
-    def encrypt_message(self, message):
+    @classmethod
+    def encrypt_message(cls, key, message):
         print(f"Encrypting {message}")
-        return self.key.encypt(message)
+        return key.encypt(message)
 
-    def decrypt_message(self, encrypted_message):
-        decrypted = self.key.decrypt(encrypted_message)
+    @classmethod
+    def decrypt_message(cls, key, encrypted_message):
+        decrypted = key.decrypt(encrypted_message)
         print(f"Decrypted Message: {decrypted}")
         return decrypted
