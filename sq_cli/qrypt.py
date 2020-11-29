@@ -1,6 +1,6 @@
 from cryptography.fernet import Fernet
 import logging
-from secretsharing import SecretSharer, PlaintextToHexSecretSharer
+from secretsharing import PlaintextToHexSecretSharer
 
 logger = logging.getLogger(__name__)
 

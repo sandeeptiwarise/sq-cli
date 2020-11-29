@@ -30,12 +30,6 @@ class SQlient:
             logging.debug(f"Uploading the following key shares to the key stores: {shares}")
             self.key_store_manager.send_shares(self.name, shares)
 
-        # if not os.path.exists(Constants.SQ_CLIENT_KEY):
-        #     self.key = Qrypt.generate_key()
-        #     Qrypt.save_key(self.key, Constants.SQ_CLIENT_KEY)
-        # else:
-        #     self.key = Qrypt.load_key(Constants.SQ_CLIENT_KEY)
-
         for bucket in self.buckets:
             try:
                 logging.debug(f"Checking if bucket {self.buckets[0]} exists on Mount10")

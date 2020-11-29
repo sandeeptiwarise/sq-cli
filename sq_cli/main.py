@@ -109,8 +109,8 @@ def clean():
 
 @cli.command()
 @click.argument('local-file',
-              type=click.Path(exists=True),
-              )
+                type=click.Path(exists=True),
+                )
 def upload(local_file):
     """
     Encrypt and Upload a local file to Mount10
@@ -167,11 +167,7 @@ def ls():
     objects = client.mount10.list_object(bucket)
     for obj in objects:
         click.echo(f"- filename: {obj.object_name}, size: {obj.size}")
-    # print(client.key_store_manager.stores)
-    # client.key_store_manager.send_shares("testp", ["share1", "share2", "share3"])
-    # shares = client.key_store_manager.retrieve_shares("testp")
-    # for share in shares:
-    #     print(share)
+
 
 @cli.command()
 @click.argument('remote-file')
@@ -187,45 +183,11 @@ def delete(remote_file):
 
     client.mount10.delete_object(bucket, remote_file)
 
+
+@cli.command()
 def cleanup():
     """
-
+    Removes local configuration for SQ CLI
     """
-
-# @cli.command()
-# @click.pass_context
-# def encrypt(ctx):
-#     is_valid = validate_config()
-#     if not is_valid:
-#         return
-#
-#
-# @cli.command()
-# @click.pass_context
-# def decrypt(ctx):
-#     is_valid = validate_config()
-#     if not is_valid:
-#         return
-
-
-# if __name__ == '__main__':
-#     client_michal = SQlient("michal", "3.121.232.99:9000", "minioadmin", "minioadmin")
-#     #TODO do the enc while uploading
-#     client_michal.qrypt.encrypt_file("data/file1.txt")
-#
-#     client_michal.mount10.put_object(client_michal.buckets[0], "file1", "data/file1.txt")
-#     client_michal.mount10.get_object(client_michal.buckets[0], "file1", "data/file2")
-#
-#     client_michal.qrypt.decrypt_file("data/file2")
-#     print("*******************")
-#     data = client_michal.qrypt.decrypt_file("data/file1.txt")
-#     print(open("data/file2").read().encode())
-#     assert data == open("data/file2").read().encode()
-#
-
-
-"""
--> Clean up interfaces 
--> decouple encryption decryption and agree on expose hooks
--> 
-"""
+    logger.info(f"Removing {Constants.SQ_CONFIG_DIR}")
+    shutil.rmtree(Constants.SQ_CONFIG_DIR)
