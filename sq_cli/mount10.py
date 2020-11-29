@@ -49,11 +49,11 @@ class Mount10:
         try:
             self.minio.fput_object(bucket, remote_object_name, local_object_path)
         except ResponseError as err:
-            print(err)
+            logging.error(err)
 
     def get_object(self, bucket, remote_object_name, local_object_path):
         try:
             self.minio.fget_object(bucket, remote_object_name, local_object_path)
         except ResponseError as err:
-            print(err)
+            logging.error(err)
 
