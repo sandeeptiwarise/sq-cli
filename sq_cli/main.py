@@ -164,10 +164,12 @@ def ls():
     is_valid = validate_config()
     if not is_valid:
         return
-    print("Hello")
     client = get_client()
+    bucket = client.buckets[0]
+    objects = client.mount10.list_object(bucket)
+    for obj in objects:
+        click.echo(f"- filename: {obj.object_name}, size: {obj.size}")
 
-    client.mount10.list_object(client.buckets[0])
 
 @cli.command()
 def delete():

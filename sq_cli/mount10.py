@@ -58,7 +58,6 @@ class Mount10:
             logging.error(err)
 
     def list_object(self, bucket):
-        print("Listing objects")
+        logger.debug(f"Querying Mount10 for objects from bucket {bucket}")
         objects = self.minio.list_objects(bucket, recursive=True)
-        for object in objects:
-            print(f"{object.object_name} - {object.size}")
+        return objects
