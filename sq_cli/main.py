@@ -27,8 +27,8 @@ class Session:
 pass_session = click.make_pass_decorator(Session)
 
 
-def validate_config(ctx):
-    if not ctx.obj.is_configured:
+def validate_config():
+    if not os.path.exists(Constants.SQ_CONFIG_DIR) or not os.path.exists(Constants.SQ_CLIENT_KEY) or not os.path.exists(Constants.SQ_CONFIG_FILE):
         click.echo("SQ CLI is not configured. Please run $> sq config")
         logger.error("Client Configuration FAILED!")
         return False
@@ -59,6 +59,9 @@ def version(ctx):
 @cli.command()
 @click.pass_context
 def config(ctx):
+    """
+    Configure Synergy Quantum CLI
+    """
     # check if SQ_CONFIG_DIR exists, create if not
     if os.path.exists(Constants.SQ_CONFIG_DIR):
         logger.debug(f"SQ configuration directory exists: {Constants.SQ_CONFIG_DIR}")
@@ -92,24 +95,33 @@ def config(ctx):
 @cli.command()
 @click.pass_context
 def upload(ctx):
-    is_valid = validate_config(ctx)
+    is_valid = validate_config()
     if not is_valid:
         return
 
 
 @cli.command()
-def download():
-    pass
+@click.pass_context
+def download(ctx):
+    is_valid = validate_config()
+    if not is_valid:
+        return
 
 
 @cli.command()
-def encrypt():
-    pass
+@click.pass_context
+def encrypt(ctx):
+    is_valid = validate_config()
+    if not is_valid:
+        return
 
 
 @cli.command()
-def decrypt():
-    pass
+@click.pass_context
+def decrypt(ctx):
+    is_valid = validate_config()
+    if not is_valid:
+        return
 
 
 # if __name__ == '__main__':
