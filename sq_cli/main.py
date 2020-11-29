@@ -108,10 +108,8 @@ def clean():
 
 
 @cli.command()
-@click.option('--local-file', '-f',
-              type=click.STRING,
-              required=True,
-              help="The file to be uploaded to Mount10"
+@click.argument('local-file',
+              type=click.Path(exists=True),
               )
 def upload(local_file):
     """
@@ -135,11 +133,7 @@ def upload(local_file):
 
 
 @cli.command()
-@click.option('--remote-file', '-r',
-              type=click.STRING,
-              required=True,
-              help="The remote filename of the file to be downloaded"
-              )
+@click.argument('remote-file')
 def download(remote_file):
     """
     Download a file from Mount10 and save the decrypted copy locally
@@ -162,19 +156,21 @@ def download(remote_file):
     Qrypt.decrypt_file(key, encrypted_local_file, decrypted_local_file)
 
 
-@cli.commmand()
+@cli.command()
 def ls():
     """
     List remote directory structure
-    :return:
     """
+    pass
+
 
 @cli.command()
 def delete():
     """
     Delete remote file
-    :return:
     """
+    pass
+
 
 # @cli.command()
 # @click.pass_context

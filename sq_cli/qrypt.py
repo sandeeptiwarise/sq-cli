@@ -3,6 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class Qrypt:
     def __init__(self, key):
         self.key = Fernet(key)
@@ -20,7 +21,7 @@ class Qrypt:
     @classmethod
     def load_key(cls, key_path):
         with open(f"{key_path}", "r") as key_file:
-            return key_file.read()
+            return Fernet(key_file.read())
 
     @classmethod
     def split_key(cls, key):
