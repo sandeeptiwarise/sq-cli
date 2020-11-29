@@ -61,3 +61,7 @@ class Mount10:
         logger.debug(f"Querying Mount10 for objects from bucket {bucket}")
         objects = self.minio.list_objects(bucket, recursive=True)
         return objects
+
+    def delete_object(self, bucket, remote_object_name):
+        logger.debug(f"Removing {remote_object_name} from bucket: {bucket}")
+        self.minio.remove_object(bucket, remote_object_name)

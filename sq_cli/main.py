@@ -172,11 +172,18 @@ def ls():
 
 
 @cli.command()
-def delete():
+@click.argument('remote-file')
+def delete(remote_file):
     """
     Delete remote file
     """
-    pass
+    is_valid = validate_config()
+    if not is_valid:
+        return
+    client = get_client()
+    bucket = client.buckets[0]
+
+    client.mount10.delete_object(bucket, remote_file)
 
 
 # @cli.command()
