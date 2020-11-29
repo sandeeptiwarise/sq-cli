@@ -5,6 +5,8 @@ import click
 from sq_cli.__version__ import __version__
 import logging
 
+from sq_cli.utils import config_root_logger
+
 logger = logging.getLogger(__name__)
 
 
@@ -12,6 +14,18 @@ class Session:
     def __init__(self):
         self.config = {}
         self.verbose = False
+        self.ascii_art = f"""
+        
+  / ____|                                   / __ \                  | |                  
+ | (___  _   _ _ __   ___ _ __ __ _ _   _  | |  | |_   _  __ _ _ __ | |_ _   _ _ __ ___  
+  \___ \| | | | '_ \ / _ \ '__/ _` | | | | | |  | | | | |/ _` | '_ \| __| | | | '_ ` _ \ 
+  ____) | |_| | | | |  __/ | | (_| | |_| | | |__| | |_| | (_| | | | | |_| |_| | | | | | |
+ |_____/ \__, |_| |_|\___|_|  \__, |\__, |  \___\_\\__,_|\__,_|_| |_|\__|\__,_|_| |_| |_|
+          __/ |                __/ | __/ |                                               
+         |___/                |___/ |___/                                                
+
+                                                                  version: {__version__}
+    """
 
     def set_config(self, key, value):
         self.config[key] = value
@@ -23,14 +37,48 @@ pass_session = click.make_pass_decorator(Session)
 
 
 @click.group()
-@click.version_option(__version__)
+@click.option('--verbose', '-v',
+              count=True,
+              help="Set verbosity level. Select between -v, -vv or -vvv.")
+@click.option('--mode', '-m',
+              type=click.Choice(['api', 'standalone'], case_sensitive=False),
+              help="In API mode, output is JSON encoded. Default is standalone",
+              default='standalone')
 @click.pass_context
-def cli(ctx):
+def cli(ctx, verbose, mode):
     ctx.obj = Session()
+    config_root_logger(verbose, mode)
 
 
 @cli.command()
-def config():
+@click.pass_context
+def version(ctx):
+    click.echo(ctx.obj.ascii_art)
+
+
+@cli.command()
+@click.pass_context
+def config(ctx):
+    print(ctx.obj.ascii_art)
+
+
+@cli.command()
+def upload():
+    pass
+
+
+@cli.command()
+def download():
+    pass
+
+
+@cli.command()
+def encrypt():
+    pass
+
+
+@cli.command()
+def decrypt():
     pass
 
 
