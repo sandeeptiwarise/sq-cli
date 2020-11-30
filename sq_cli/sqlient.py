@@ -1,3 +1,5 @@
+from cryptography.fernet import Fernet
+
 from sq_cli.key_store_manager import KeyStoreManager
 from sq_cli.mount10 import Mount10
 from sq_cli.qrypt import Qrypt
@@ -18,8 +20,9 @@ class SQlient:
             shares = self.key_store_manager.retrieve_shares(self.name)
             logger.debug(f"Fetched the following key shares: {shares}")
             logger.debug(f"Generating user's key from key shares...")
-            self.key = Qrypt.recombine_key(shares)
-            logger.debug(f"User's Master Key {self.key}")
+            key = Qrypt.recombine_key(shares)
+            logger.debug(f"User's Master Key {key}")
+            self.key = Fernet(key)
         except Exception as err:
             logging.debug(f"Could not find user {self.name}'s key on the key stores.")
             logging.error(err)
