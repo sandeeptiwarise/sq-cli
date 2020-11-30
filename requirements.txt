@@ -19,12 +19,16 @@ pyparsing==2.4.7
 python-dateutil==2.8.1
 pytz==2020.4
 readme-renderer==28.0
+redis==3.5.3
 requests==2.25.0
 requests-toolbelt==0.9.1
 rfc3986==1.4.0
+secret-sharing==0.2.7
 six==1.15.0
+-e git+https://github.com/synergyquantum/SQrypt@75e6c40ad0a0f96bb5918390d5f28890a5670537#egg=sqrypt
 tqdm==4.54.0
 twine==3.2.0
 urllib3==1.26.2
+utilitybelt==0.2.6
 webencodings==0.5.1
 zipp==3.4.0

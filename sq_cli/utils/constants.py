@@ -20,8 +20,8 @@ class Constants:
     """
 
     USER_HOME_DIR = str(Path.home())
-    SQ_CONFIG_DIR = f"{USER_HOME_DIR}/.synerguquantum"
-    SQ_CONFIG_FILE = f"{SQ_CONFIG_DIR}/config"
+    SQ_CONFIG_DIR = Path(f"{USER_HOME_DIR}/.synerguquantum").name
+    SQ_CONFIG_FILE = Path(f"{SQ_CONFIG_DIR}/config").name
     SQ_CONFIG_FILE_TEMPLATE_DICT = {
         "username": "",
         "server": "IP_ADDRESS:PORT",
@@ -45,5 +45,5 @@ class Constants:
             }
         ]
     }
-    SQ_CLIENT_KEY = f"{SQ_CONFIG_DIR}/sq.key"
-    SQ_CLIENT_SECURE_DATA_DIR = f"{SQ_CONFIG_DIR}/mount10"
+    SQ_CLIENT_KEY = Path(f"{SQ_CONFIG_DIR}/sq.key").name
+    SQ_CLIENT_SECURE_DATA_DIR = Path(f"{SQ_CONFIG_DIR}/mount10").name
