@@ -41,3 +41,9 @@ class SQlient:
             except Exception as err:
                 logging.debug(f"Bucket {self.buckets[0]} already exists on Mount10")
                 logging.error(err)
+
+    def get_key(self):
+        if self.key is bytes:
+            return Fernet(self.key)
+        else:
+            return self.key
