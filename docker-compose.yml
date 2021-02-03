@@ -1,0 +1,43 @@
+version: "3.2"
+services:
+  redis-1:
+    image: "redis:alpine"
+    command: redis-server --requirepass redisadmin
+    ports:
+      - "6379:6379"
+    volumes:
+      - $PWD/data/redis-1-data:/var/lib/redis
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  redis-2:
+    image: "redis:alpine"
+    command: redis-server --requirepass redisadmin
+    ports:
+      - "6380:6379"
+    volumes:
+      - $PWD/data/redis-2-data:/var/lib/redis
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  redis-3:
+    image: "redis:alpine"
+    command: redis-server --requirepass redisadmin
+    ports:
+      - "6381:6379"
+    volumes:
+      - $PWD/data/redis-3-data:/var/lib/redis
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  minio:
+    image: minio/minio
+    hostname: minio
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    ports:
+      - "9000:9000"
+    volumes:
+      - $PWD/data/minio:/data
+    command: ["server", "/data"]

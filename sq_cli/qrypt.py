@@ -12,7 +12,7 @@ class Qrypt:
     @classmethod
     def generate_key(cls):
         key = Fernet.generate_key()
-        return Fernet(key)
+        return key
 
     @classmethod
     def save_key(cls, key, key_path):

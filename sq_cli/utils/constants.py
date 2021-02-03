@@ -23,25 +23,25 @@ class Constants:
     SQ_CONFIG_DIR = str(Path(f"{USER_HOME_DIR}", ".synerguquantum"))
     SQ_CONFIG_FILE = str(Path(SQ_CONFIG_DIR, "config"))
     SQ_CONFIG_FILE_TEMPLATE_DICT = {
-        "username": "",
-        "server": "IP_ADDRESS:PORT",
-        "access_key": "replace with access key",
-        "secret_key": "replace with secret key",
+        "username": "maany",
+        "server": "0.0.0.0:9000",
+        "access_key": "minioadmin",
+        "secret_key": "minioadmin",
         "key_stores": [
             {
-                "host": "",
-                "port": "",
-                "password": ""
+                "host": "0.0.0.0",
+                "port": "6379",
+                "password": "redisadmin"
             },
             {
-                "host": "",
-                "port": "",
-                "password": ""
+                "host": "0.0.0.0",
+                "port": "6380",
+                "password": "redisadmin"
             },
             {
-                "host": "",
-                "port": "",
-                "password": ""
+                "host": "0.0.0.0",
+                "port": "6381",
+                "password": "redisadmin"
             }
         ]
     }
