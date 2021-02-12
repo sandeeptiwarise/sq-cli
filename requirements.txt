@@ -15,6 +15,7 @@ packaging==20.7
 pkginfo==1.6.1
 pycparser==2.20
 Pygments==2.7.2
+PyJWT==2.0.1
 pyparsing==2.4.7
 python-dateutil==2.8.1
 pytz==2020.4
@@ -25,7 +26,7 @@ requests-toolbelt==0.9.1
 rfc3986==1.4.0
 secret-sharing==0.2.7
 six==1.15.0
--e git+https://github.com/synergyquantum/SQrypt@75e6c40ad0a0f96bb5918390d5f28890a5670537#egg=sqrypt
+-e git+https://github.com/synergyquantum/SQrypt@0874898686b01aa2cab5010853e924fa16a2bc6b#egg=sqrypt
 tqdm==4.54.0
 twine==3.2.0
 urllib3==1.26.2

@@ -1,6 +1,7 @@
 import logging
 import base64
 import requests
+import jwt
 
 
 logger = logging.getLogger(__name__)
@@ -63,5 +64,5 @@ class SQAuth:
         print(token_request.text)
 
     @classmethod
-    def verify_token(cls):
+    def verify_token(cls, access_token):
         pass
