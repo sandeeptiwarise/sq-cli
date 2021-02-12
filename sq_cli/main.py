@@ -1,5 +1,6 @@
 import shutil
 import sys
+from urllib import parse
 
 import click
 import logging
@@ -8,6 +9,7 @@ import os
 from sq_cli.qrypt import Qrypt
 from sq_cli.utils import config_root_logger, generate_configuration_template, get_client
 from sq_cli.utils.constants import Constants
+from sq_cli.sqauth import SQAuth
 
 logger = logging.getLogger(__name__)
 
@@ -191,3 +193,32 @@ def cleanup():
     """
     logger.info(f"Removing {Constants.SQ_CONFIG_DIR}")
     shutil.rmtree(Constants.SQ_CONFIG_DIR)
+
+
+@cli.group()
+def auth():
+    """
+    Generate Access Token for communicating with SQ API Gateway
+    """
+    pass
+
+
+@auth.command()
+def fetch_auth_code():
+    """
+    Generate the Authorization Endpoint URL
+    """
+    SQAuth.generate_auth_key_url()
+
+
+@auth.command()
+@click.option('--redirect-uri', prompt='Paste your redirection uri here',
+              help='The redirection url after running sq auth request-auth-code.')
+def fetch_token(redirect_uri):
+    """
+    Swap auth_code for token
+    """
+    query_string = parse.urlsplit(redirect_uri).query
+    auth_code = dict(parse.parse_qsl(query_string))['code']
+    logger.info(f"Authorization code: {auth_code} extracted from url {redirect_uri}")
+    SQAuth.fetch_token(auth_code)

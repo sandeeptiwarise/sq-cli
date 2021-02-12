@@ -43,7 +43,13 @@ class Constants:
                 "port": "6381",
                 "password": "redisadmin"
             }
-        ]
+        ],
+        "aws_cognito_user_pool_url": "",
+        "aws_cognito_client_id": "",
+        "aws_cognito_client_secret": "",
+        "aws_cognito_user_pool_id": "",
+        "aws_cognito_user_pool_arn": "",
+
     }
     SQ_CLIENT_KEY = str(Path(f"{SQ_CONFIG_DIR}/sq.key"))
     SQ_CLIENT_SECURE_DATA_DIR = str(Path(f"{SQ_CONFIG_DIR}/mount10"))
