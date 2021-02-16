@@ -53,3 +53,5 @@ class Constants:
     }
     SQ_CLIENT_KEY = str(Path(f"{SQ_CONFIG_DIR}/sq.key"))
     SQ_CLIENT_SECURE_DATA_DIR = str(Path(f"{SQ_CONFIG_DIR}/mount10"))
+    CQC_TEST_SANDBOX_CERT = '/Users/mayanksharma/Downloads/CQC_testing_cert.pfx'
+    CQC_TEST_SANDBOX_CERT_PASS = '$Friday345'
