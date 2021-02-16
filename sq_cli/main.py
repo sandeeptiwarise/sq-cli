@@ -225,6 +225,18 @@ def fetch_token(redirect_uri):
     SQAuth.fetch_token(auth_code)
 
 
+@auth.command()
+@click.option('--access-token', prompt='Paste your access token here',
+              help='The access token after running sq auth fetch-token')
+def verify_token(access_token):
+    """
+    Access Token Vericfication Using API Gateway
+    """
+    #print(access_token)
+    # call sq auth validate function
+    SQAuth.verify_token(access_token)
+
+
 @cli.group()
 def cqc():
     """
@@ -255,3 +267,6 @@ def setup_client():
     Check certificate
     """
     CQCAdapter.setupClient()
+
+
+

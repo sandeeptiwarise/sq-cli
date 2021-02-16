@@ -12,7 +12,7 @@ class SQAuth:
     APP_SECRET = "11ntmbq08pl40433hkq5oa6t9tdqmp55qd0ij9pp4anmkmivlikc"
     URL = "auth-synergyquantum.auth.us-east-2.amazoncognito.com"
     REDIRECT_URI = "https://localhost/test"
-    SQ_API_GAETEWAY_TOKEN_VALIDATION_URL = "http://localhost:8000/api"
+    SQ_API_GAETEWAY_URL = "http://0.0.0.0:8000/api"
 
     def __init__(self):
         pass
@@ -76,5 +76,15 @@ class SQAuth:
 
     @classmethod
     def verify_token(cls, access_token):
-        pass
-        #send request to SQ API Gateway
+        
+        #send request to SQ API Gateway using API endpoint
+        response = requests.get(f"{SQAuth.SQ_API_GAETEWAY_URL}/validate",headers={
+            "Authorization": f"Bearer {access_token}" 
+        } )
+        print(response.text)
+
+        
+
+
+
+
