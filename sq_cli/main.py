@@ -230,4 +230,7 @@ def verify_token(access_token):
     """
     Access Token Vericfication Using API Gateway 
     """     
-    print(access_token)
+    #print(access_token)
+    # call sq auth validate function
+    SQAuth.verify_token(access_token)
+
