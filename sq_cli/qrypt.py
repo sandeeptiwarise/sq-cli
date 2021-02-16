@@ -39,7 +39,9 @@ class Qrypt:
 
         with open(local_file, "rb") as fp:
             file_data = fp.read()
-            encrypted_data = key.encrypt(file_data)
+            encrypted_data = Fernet(key).encrypt(file_data)
+
+            
 
         logging.debug(f'Saving encrypted file to {encrypted_local_file}')
 

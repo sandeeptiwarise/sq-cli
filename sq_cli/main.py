@@ -222,3 +222,12 @@ def fetch_token(redirect_uri):
     auth_code = dict(parse.parse_qsl(query_string))['code']
     logger.info(f"Authorization code: {auth_code} extracted from url {redirect_uri}")
     SQAuth.fetch_token(auth_code)
+
+@auth.command()
+@click.option('--access-token', prompt='Paste your access token here',
+              help='The access token after running sq auth fetch-token')
+def verify_token(access_token):
+    """
+    Access Token Vericfication Using API Gateway 
+    """     
+    print(access_token)
