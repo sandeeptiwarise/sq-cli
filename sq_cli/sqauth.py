@@ -1,8 +1,8 @@
+import json
 import logging
 import base64
 import requests
 import jwt
-
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +12,7 @@ class SQAuth:
     APP_SECRET = "11ntmbq08pl40433hkq5oa6t9tdqmp55qd0ij9pp4anmkmivlikc"
     URL = "auth-synergyquantum.auth.us-east-2.amazoncognito.com"
     REDIRECT_URI = "https://localhost/test"
+    SQ_API_GAETEWAY_TOKEN_VALIDATION_URL = "http://localhost:8000/api"
 
     def __init__(self):
         pass
@@ -61,8 +62,19 @@ class SQAuth:
                                           "Content-Type": "application/x-www-form-urlencoded",
                                           "Authorization": f"{authorization_header}"
                                       })
-        print(token_request.text)
+        res = token_request.text
+        logger.info(f"Tokens Received: {res}")
+        tokens = json.loads(res)
+        access_token = ''
+        try:
+            access_token = tokens['access_token']
+        except Exception:
+            logger.error('Auth Code expired. Re-run sq auth fetch-auth-code')
+            exit()
+
+        print(f"Access Token: {access_token}")
 
     @classmethod
     def verify_token(cls, access_token):
         pass
+        #send request to SQ API Gateway
