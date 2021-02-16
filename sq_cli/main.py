@@ -6,6 +6,7 @@ import click
 import logging
 import os
 
+from sq_cli.cqc import CQCAdapter
 from sq_cli.qrypt import Qrypt
 from sq_cli.utils import config_root_logger, generate_configuration_template, get_client
 from sq_cli.utils.constants import Constants
@@ -222,3 +223,50 @@ def fetch_token(redirect_uri):
     auth_code = dict(parse.parse_qsl(query_string))['code']
     logger.info(f"Authorization code: {auth_code} extracted from url {redirect_uri}")
     SQAuth.fetch_token(auth_code)
+
+
+@auth.command()
+@click.option('--access-token', prompt='Paste your access token here',
+              help='The access token after running sq auth fetch-token')
+def verify_token(access_token):
+    """
+    Access Token Vericfication Using API Gateway
+    """
+    #print(access_token)
+    # call sq auth validate function
+    SQAuth.verify_token(access_token)
+
+
+@cli.group()
+def cqc():
+    """
+    Adapter for exploring CQC functionality
+    """
+    pass
+
+
+@cqc.command()
+def test_connection():
+    """
+    Test Connection to ironbridge api sandbox
+    """
+    CQCAdapter.testConnection()
+
+
+@cqc.command()
+def get_info():
+    """
+    Get endpoint info
+    """
+    CQCAdapter.getInfo()
+
+
+@cqc.command()
+def setup_client():
+    """
+    Check certificate
+    """
+    CQCAdapter.setupClient()
+
+
+
