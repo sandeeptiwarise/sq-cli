@@ -3,9 +3,11 @@ from cryptography.fernet import Fernet
 from sq_cli.key_store_manager import KeyStoreManager
 from sq_cli.mount10 import Mount10
 from sq_cli.qrypt import Qrypt
+from sq_cli.sqauth import SQAuth
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 
 class SQlient:
@@ -15,6 +17,7 @@ class SQlient:
         self.mount10 = Mount10(self.name, server_ip, server_access_key, server_secret_key)
         self.key_store_manager = KeyStoreManager(key_stores)
         self.key = None
+        self.token = None
         try:
             logger.debug("Trying to fetch key shares...")
             shares = self.key_store_manager.retrieve_shares(self.name)
@@ -47,3 +50,4 @@ class SQlient:
             return Fernet(self.key)
         else:
             return self.key
+

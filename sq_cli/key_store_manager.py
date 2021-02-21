@@ -31,3 +31,4 @@ class KeyStoreManager:
             shares.append(store.lpop(db_key).decode())
         self.send_shares(db_key, shares)
         return shares
+

@@ -1,21 +1,15 @@
 import json
 import logging
 import base64
+import traceback
+
 import requests
-from sq_cli.utils import get_config, save_config
+from sq_cli.utils.config import get_config, save_config
 
 logger = logging.getLogger(__name__)
 
 
 class SQAuth:
-    APP_ID = get_config('aws_cognito_client_id')
-    APP_SECRET = get_config('aws_cognito_client_secret')
-    URL = get_config('aws_cognito_user_pool_url')
-    REDIRECT_URI = get_config('aws_cognito_redirect_url')
-    SQ_API_GAETEWAY_URL = get_config('sq_api_gateway_url')
-
-    def __init__(self):
-        pass
 
     @classmethod
     def generate_authorization_header(cls, app_id, app_secret):
@@ -38,7 +32,10 @@ class SQAuth:
     @classmethod
     def generate_auth_key_url(cls):
         logger.info("Generating AWS Cognito URL for /authorize endpoint")
-        authorization_url = SQAuth.generate_authorization_endpoint_url(SQAuth.URL, SQAuth.APP_ID, SQAuth.REDIRECT_URI)
+        APP_ID = get_config('aws_cognito_client_id')
+        URL = get_config('aws_cognito_user_pool_url')
+        REDIRECT_URI = get_config('aws_cognito_redirect_url')
+        authorization_url = SQAuth.generate_authorization_endpoint_url(URL, APP_ID, REDIRECT_URI)
         print(
             "Please open the following url in your browser. You will be asked to login with your SynergyQuantum account. "
             "After a successful login, you will be redirected to a local web page. Please copy the url of the local web page "
@@ -49,14 +46,18 @@ class SQAuth:
 
     @classmethod
     def fetch_token(cls, auth_code):
-        url = SQAuth.generate_token_endpoint_url(SQAuth.URL)
-        authorization_header = SQAuth.generate_authorization_header(SQAuth.APP_ID, SQAuth.APP_SECRET)
+        APP_ID = get_config('aws_cognito_client_id')
+        APP_SECRET = get_config('aws_cognito_client_secret')
+        URL = get_config('aws_cognito_user_pool_url')
+        REDIRECT_URI = get_config('aws_cognito_redirect_url')
+        url = SQAuth.generate_token_endpoint_url(URL)
+        authorization_header = SQAuth.generate_authorization_header(APP_ID, APP_SECRET)
         token_request = requests.post(url,
                                       data={
                                           "grant_type": "authorization_code",
-                                          "client_id": SQAuth.APP_ID,
+                                          "client_id": APP_ID,
                                           "code": auth_code,
-                                          "redirect_uri": SQAuth.REDIRECT_URI
+                                          "redirect_uri": REDIRECT_URI
                                       },
                                       headers={
                                           "Content-Type": "application/x-www-form-urlencoded",
@@ -74,17 +75,17 @@ class SQAuth:
             refresh_token = tokens['refresh_token']
             logger.info('Saving Refresh token to configuration file....')
             save_config('aws_cognito_refresh_token', refresh_token)
-        except Exception:
+        except Exception as e:
             logger.error('Auth Code expired. Re-run sq auth fetch-auth-code')
             exit()
 
         print(f"Access Token: {access_token}")
-
+        return access_token
     @classmethod
     def verify_token(cls, access_token):
-
+        SQ_API_GAETEWAY_URL = get_config('sq_api_gateway_url')
         # send request to SQ API Gateway using API endpoint
-        response = requests.get(f"{SQAuth.SQ_API_GAETEWAY_URL}/validate", headers={
+        response = requests.get(f"{SQ_API_GAETEWAY_URL}/validate", headers={
             "Authorization": f"Bearer {access_token}"
         })
         print(response.text)

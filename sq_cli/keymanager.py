@@ -1,30 +1,26 @@
 import json
 import logging
-import base64
 import requests
-import jwt
+from sq_cli.utils.config import get_config
 
 logger = logging.getLogger(__name__)
 
 
 class KeyManager:
-    APP_ID = "5ds1u73jqstrjkjivge8e3cb3q"
-    APP_SECRET = "11ntmbq08pl40433hkq5oa6t9tdqmp55qd0ij9pp4anmkmivlikc"
-    URL = "auth-synergyquantum.auth.us-east-2.amazoncognito.com"
-    REDIRECT_URI = "https://localhost/test"
-    SQ_API_GAETEWAY_URL = "http://0.0.0.0:8000/api"
-
-    def __init__(self):
-        pass
-
 
     @classmethod
-    def recieve_keys(cls, access_token):
-        
-        #send request to SQ API Gateway using API endpoint
-        response = requests.get(f"{KeyManager.SQ_API_GAETEWAY_URL}/key",headers={
-            "Authorization": f"Bearer {access_token}" 
-        } )
-        print(response.text)
+    def fetch_keyshares(cls, access_token):
+        SQ_API_GATEWAY_URL = get_config('sq_api_gateway_url')
+        response = requests.get(f"{SQ_API_GATEWAY_URL}/key", headers={
+            "Authorization": f"Bearer {access_token}"
+        })
 
-  
+        if response.status_code == 404:
+            logger.error("Keyshares not found")
+            return None
+        elif response.status_code == 200:
+            logger.info(f"Keyshares retrieved: {response.text}")
+            return json.loads(response.text)
+        else:
+            logger.error(f"Unexpected error occurred while fetching keyshares: Response Code {response.status_code}")
+            return None
