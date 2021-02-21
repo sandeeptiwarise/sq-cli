@@ -69,7 +69,7 @@ def save_config(key, value):
     with open(Constants.SQ_CONFIG_FILE, 'r+') as f:
         config = json.load(f)
         config[key] = value
-        print(config)
         f.seek(0)
         f.write(json.dumps(config, indent=4))
         return config
+

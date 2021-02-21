@@ -2,17 +2,17 @@ import json
 import logging
 import base64
 import requests
-import jwt
+from sq_cli.utils import get_config, save_config
 
 logger = logging.getLogger(__name__)
 
 
 class SQAuth:
-    APP_ID = "5ds1u73jqstrjkjivge8e3cb3q"
-    APP_SECRET = "11ntmbq08pl40433hkq5oa6t9tdqmp55qd0ij9pp4anmkmivlikc"
-    URL = "auth-synergyquantum.auth.us-east-2.amazoncognito.com"
-    REDIRECT_URI = "https://localhost/test"
-    SQ_API_GAETEWAY_URL = "http://0.0.0.0:8000/api"
+    APP_ID = get_config('aws_cognito_client_id')
+    APP_SECRET = get_config('aws_cognito_client_secret')
+    URL = get_config('aws_cognito_user_pool_url')
+    REDIRECT_URI = get_config('aws_cognito_redirect_url')
+    SQ_API_GAETEWAY_URL = get_config('sq_api_gateway_url')
 
     def __init__(self):
         pass
@@ -68,6 +68,12 @@ class SQAuth:
         access_token = ''
         try:
             access_token = tokens['access_token']
+            logger.info('Saving access token to configuration file....')
+            save_config('aws_cognito_access_token', access_token)
+
+            refresh_token = tokens['refresh_token']
+            logger.info('Saving Refresh token to configuration file....')
+            save_config('aws_cognito_refresh_token', refresh_token)
         except Exception:
             logger.error('Auth Code expired. Re-run sq auth fetch-auth-code')
             exit()
@@ -76,17 +82,9 @@ class SQAuth:
 
     @classmethod
     def verify_token(cls, access_token):
-        
-        #send request to SQ API Gateway using API endpoint
-        response = requests.get(f"{SQAuth.SQ_API_GAETEWAY_URL}/validate",headers={
-            "Authorization": f"Bearer {access_token}" 
-        } )
+
+        # send request to SQ API Gateway using API endpoint
+        response = requests.get(f"{SQAuth.SQ_API_GAETEWAY_URL}/validate", headers={
+            "Authorization": f"Bearer {access_token}"
+        })
         print(response.text)
-
-        
-
-        
-
-
-
-
