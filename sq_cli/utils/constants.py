@@ -49,9 +49,16 @@ class Constants:
         "aws_cognito_client_secret": "",
         "aws_cognito_user_pool_id": "",
         "aws_cognito_user_pool_arn": "",
-
+        "aws_cognito_access_token": ""
     }
     SQ_CLIENT_KEY = str(Path(f"{SQ_CONFIG_DIR}/sq.key"))
     SQ_CLIENT_SECURE_DATA_DIR = str(Path(f"{SQ_CONFIG_DIR}/mount10"))
     CQC_TEST_SANDBOX_CERT = '/Users/mayanksharma/Downloads/CQC_testing_cert.pfx'
     CQC_TEST_SANDBOX_CERT_PASS = '$Friday345'
+
+    APP_ID = "5ds1u73jqstrjkjivge8e3cb3q"
+    APP_SECRET = "11ntmbq08pl40433hkq5oa6t9tdqmp55qd0ij9pp4anmkmivlikc"
+    URL = "auth-synergyquantum.auth.us-east-2.amazoncognito.com"
+    REDIRECT_URI = "https://localhost/test"
+    SQ_API_GAETEWAY_URL = "http://0.0.0.0:8000/api"
+
