@@ -11,6 +11,7 @@ from sq_cli.qrypt import Qrypt
 from sq_cli.utils import config_root_logger, generate_configuration_template, get_client
 from sq_cli.utils.constants import Constants
 from sq_cli.sqauth import SQAuth
+from sq_cli.keymanager import KeyManager
 
 logger = logging.getLogger(__name__)
 
@@ -235,6 +236,19 @@ def verify_token(access_token):
     #print(access_token)
     # call sq auth validate function
     SQAuth.verify_token(access_token)
+
+@auth.command()
+@click.option('--access-token', prompt='Paste your access token here',
+              help='The key after running sq auth get-key')
+def get_key(access_token):
+    """
+    Key Share Generation Using Key Store API Gateway For Active Access Token
+    """
+    #print(access_token)
+    # call sq auth validate function
+    KeyManager.recieve_keys(access_token)
+
+
 
 
 @cli.group()
