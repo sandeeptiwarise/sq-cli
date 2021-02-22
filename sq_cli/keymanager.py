@@ -3,6 +3,8 @@ import logging
 import requests
 from sq_cli.utils.config import get_config
 
+from sq_cli.qrypt import Qrypt
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,3 +26,4 @@ class KeyManager:
         else:
             logger.error(f"Unexpected error occurred while fetching keyshares: Response Code {response.status_code}")
             return None
+   

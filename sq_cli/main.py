@@ -1,7 +1,7 @@
 import shutil
 import sys
 from urllib import parse
-
+from requests import Request
 import click
 import logging
 import os
@@ -128,6 +128,23 @@ def config():
         key_as_text = Qrypt.load_key_as_text(Constants.SQ_CLIENT_KEY)
         shares = Qrypt.split_key(key_as_text)
         # upload shares via sq-api-gateway
+
+
+        # TODO Call /register end point of sq-api-gateway to split the keyshare
+        # into 3 different parts and then sending these three parts to keystore-api-gateway
+        # on three different ports to get it stored in 3 different instances of reddis
+        # finally we show a 'Registeration Done' message here on receiving status 200 - OK
+        SQ_API_GAETEWAY_URL = get_config('sq_api_gateway_url')
+        SQ_API_GATEWAY_URL = get_config('sq_api_gateway_url')
+        response = requests.get(f"{SQ_API_GATEWAY_URL}/register", headers={
+            "keyshares": f"Bearer {shares}",
+            "access_token": f"Bearer {access_token}",
+        })
+
+       
+
+
+
 
     # click.echo(Constants.ASCII_VERSION_ART)
     # click.echo("SQ CLI is properly configured")
