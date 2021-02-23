@@ -56,3 +56,6 @@ def get_client():
         config = json.load(f)
     client = SQlient(config['username'], config['server'], config['access_key'], config['secret_key'], config['key_stores'])
     return client
+
+
+

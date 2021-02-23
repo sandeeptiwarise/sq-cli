@@ -25,8 +25,13 @@ class Qrypt:
             return Fernet(key_file.read())
 
     @classmethod
+    def load_key_as_text(cls, key_path):
+        with open(f"{key_path}", "r") as key_file:
+            return key_file.read()
+
+    @classmethod
     def split_key(cls, key):
-        shares = PlaintextToHexSecretSharer.split_secret(key.decode(), 2, 3)
+        shares = PlaintextToHexSecretSharer.split_secret(key, 2, 3)
         return shares
 
     @classmethod
@@ -39,7 +44,7 @@ class Qrypt:
 
         with open(local_file, "rb") as fp:
             file_data = fp.read()
-            encrypted_data = key.encrypt(file_data)
+            encrypted_data = Fernet(key).encrypt(file_data)
 
         logging.debug(f'Saving encrypted file to {encrypted_local_file}')
 

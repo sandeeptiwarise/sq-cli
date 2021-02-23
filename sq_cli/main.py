@@ -1,15 +1,19 @@
 import shutil
 import sys
 from urllib import parse
-
+from requests import Request
 import click
 import logging
 import os
 
+from sq_cli.cqc import CQCAdapter
 from sq_cli.qrypt import Qrypt
 from sq_cli.utils import config_root_logger, generate_configuration_template, get_client
+from sq_cli.utils.config import get_config
 from sq_cli.utils.constants import Constants
 from sq_cli.sqauth import SQAuth
+from sq_cli.keymanager import KeyManager
+from sq_cli.utils.oauth import extract_auth_code
 
 logger = logging.getLogger(__name__)
 
@@ -63,38 +67,88 @@ def version(ctx):
 
 @cli.command()
 @click.pass_context
-def config(ctx):
+def init(ctx):
     """
-    Configure Synergy Quantum CLI
+    Initialize the SQ CLI for a new user
     """
-    # check if SQ_CONFIG_DIR exists, create if not
+    # Check if SQ Config Dir exists
     if os.path.exists(Constants.SQ_CONFIG_DIR):
-        logger.debug(f"SQ configuration directory exists: {Constants.SQ_CONFIG_DIR}")
+        logger.info(f"SQ configuration directory exists: {Constants.SQ_CONFIG_DIR}")
     else:
-        logger.debug(f"SQ configuration directory NOT FOUND: {Constants.SQ_CONFIG_DIR}")
+        logger.error(f"SQ configuration directory NOT FOUND: {Constants.SQ_CONFIG_DIR}")
         logger.debug(f"Creating SQ configuration directory: {Constants.SQ_CONFIG_DIR}")
         os.mkdir(Constants.SQ_CONFIG_DIR)
 
-    # check if user's key exists, generate new one otherwise
-    if os.path.exists(Constants.SQ_CLIENT_KEY):
-        logger.debug(f"SQ Key found: {Constants.SQ_CONFIG_DIR}")
-    else:
-        logger.debug(f"Generating new SQ Key and saving to {Constants.SQ_CONFIG_DIR}")
-        key = Qrypt.generate_key()
-        Qrypt.save_key(key, Constants.SQ_CLIENT_KEY)
-
-    # check if client config file exists, generate template otherwise
+    # Check if SQ config exists
     if os.path.exists(Constants.SQ_CONFIG_FILE):
-        logger.debug(f"Found Mount10 Configuration in the config file: {Constants.SQ_CONFIG_DIR}")
+        logger.debug(f"Found SQ Configuration in the config file: {Constants.SQ_CONFIG_DIR}")
     else:
-        logger.debug(f"Mount10 Configuration Not FOUND: {Constants.SQ_CONFIG_DIR}")
+        logger.error(f"SQ Configuration Not FOUND: {Constants.SQ_CONFIG_DIR}")
         generate_configuration_template()
-        click.echo(f"Generated template of Mount10 configuration file {Constants.SQ_CONFIG_FILE}")
-        click.echo("Please fill out the configuration pararmeters in the template")
+        click.echo(f"Generated template of SQ configuration file {Constants.SQ_CONFIG_FILE}")
+        click.echo("Please fill out the configuration parameters in the template carefully and re-run `sq init`")
         return
+
+    user = get_config('username')
     click.echo(Constants.ASCII_VERSION_ART)
-    click.echo("SQ CLI is properly configured")
+    click.echo(f"SQ CLI is properly initialized for user {user}. Please run `sq config` to configure the CLI.")
     ctx.obj.is_configured = True
+
+
+@cli.command()
+def config():
+    """
+    Configure Synergy Quantum CLI.
+    """
+    # Get token
+    oauth_token = get_config('aws_cognito_access_token')
+    if oauth_token is '' or oauth_token is None:
+        SQAuth.generate_auth_key_url()
+        redirect_uri = click.prompt("Paste your redirection uri here: ")
+        auth_code = extract_auth_code(redirect_uri)
+        logger.info(f"Fetching access_token for auth_code: {auth_code}")
+        SQAuth.fetch_token(auth_code)
+    else:
+        logger.info("OAuth Token found!")
+
+    # Get Key
+    # check if user's key exists remotely via SQ API Gateway
+    access_token = get_config('aws_cognito_access_token')
+    print(f"8888 {access_token}")
+    keyshares = KeyManager.fetch_keyshares(access_token=access_token)
+    if keyshares is None:
+        if os.path.exists(Constants.SQ_CLIENT_KEY):
+            logger.info(f"SQ Key found: {Constants.SQ_CLIENT_KEY}")
+        else:
+            logger.info(f"Generating new SQ Key and saving to {Constants.SQ_CLIENT_KEY}")
+            key = Qrypt.generate_key()
+            Qrypt.save_key(key, Constants.SQ_CLIENT_KEY)
+
+        logger.info("Loading local copy of user's key")
+        key_as_text = Qrypt.load_key_as_text(Constants.SQ_CLIENT_KEY)
+        shares = Qrypt.split_key(key_as_text)
+        # upload shares via sq-api-gateway
+
+
+        # TODO Call /register end point of sq-api-gateway to split the keyshare
+        # into 3 different parts and then sending these three parts to keystore-api-gateway
+        # on three different ports to get it stored in 3 different instances of reddis
+        # finally we show a 'Registeration Done' message here on receiving status 200 - OK
+        SQ_API_GAETEWAY_URL = get_config('sq_api_gateway_url')
+        SQ_API_GATEWAY_URL = get_config('sq_api_gateway_url')
+        response = requests.get(f"{SQ_API_GATEWAY_URL}/register", headers={
+            "keyshares": f"Bearer {shares}",
+            "access_token": f"Bearer {access_token}",
+        })
+
+       
+
+
+
+
+    # click.echo(Constants.ASCII_VERSION_ART)
+    # click.echo("SQ CLI is properly configured")
+    # ctx.obj.is_configured = True
 
 
 @click.command()
@@ -218,7 +272,61 @@ def fetch_token(redirect_uri):
     """
     Swap auth_code for token
     """
-    query_string = parse.urlsplit(redirect_uri).query
-    auth_code = dict(parse.parse_qsl(query_string))['code']
-    logger.info(f"Authorization code: {auth_code} extracted from url {redirect_uri}")
+    auth_code = extract_auth_code(redirect_uri)
     SQAuth.fetch_token(auth_code)
+
+
+@auth.command()
+@click.option('--access-token', prompt='Paste your access token here',
+              help='The access token after running sq auth fetch-token')
+def verify_token(access_token):
+    """
+    Access Token Vericfication Using API Gateway
+    """
+    # print(access_token)
+    # call sq auth validate function
+    SQAuth.verify_token(access_token)
+
+
+@auth.command()
+@click.option('--access-token', prompt='Paste your access token here',
+              help='The key after running sq auth get-key')
+def get_key(access_token):
+    """
+    Key Share Generation Using Key Store API Gateway For Active Access Token
+    """
+    # print(access_token)
+    # call sq auth validate function
+    KeyManager.recieve_keys(access_token)
+
+
+@cli.group()
+def cqc():
+    """
+    Adapter for exploring CQC functionality
+    """
+    pass
+
+
+@cqc.command()
+def test_connection():
+    """
+    Test Connection to ironbridge api sandbox
+    """
+    CQCAdapter.testConnection()
+
+
+@cqc.command()
+def get_info():
+    """
+    Get endpoint info
+    """
+    CQCAdapter.getInfo()
+
+
+@cqc.command()
+def setup_client():
+    """
+    Check certificate
+    """
+    CQCAdapter.setupClient()

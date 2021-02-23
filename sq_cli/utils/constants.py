@@ -44,12 +44,21 @@ class Constants:
                 "password": "redisadmin"
             }
         ],
-        "aws_cognito_user_pool_url": "",
-        "aws_cognito_client_id": "",
-        "aws_cognito_client_secret": "",
-        "aws_cognito_user_pool_id": "",
-        "aws_cognito_user_pool_arn": "",
-
+        "aws_cognito_user_pool_url": "auth-synergyquantum.auth.us-east-2.amazoncognito.com",
+        "aws_cognito_client_id": "5ds1u73jqstrjkjivge8e3cb3q",
+        "aws_cognito_client_secret": "11ntmbq08pl40433hkq5oa6t9tdqmp55qd0ij9pp4anmkmivlikc",
+        "aws_cognito_user_pool_id": "us-east-2_zflucxkbq",
+        "aws_cognito_user_pool_arn": "arn:aws:cognito-idp:us-east-2:798503188190:userpool/us-east-2_zflucxkbq",
+        "aws_cognito_access_token": "",
+        "aws_cognito_refresh_token": "",
+        "aws_cognito_redirect_url": "https://localhost/test",
+        "sq_api_gateway_url": "http://0.0.0.0:8000/api"
     }
+
     SQ_CLIENT_KEY = str(Path(f"{SQ_CONFIG_DIR}/sq.key"))
     SQ_CLIENT_SECURE_DATA_DIR = str(Path(f"{SQ_CONFIG_DIR}/mount10"))
+
+    CQC_TEST_SANDBOX_CERT = '/Users/mayanksharma/Downloads/CQC_testing_cert.pfx'
+    CQC_TEST_SANDBOX_CERT_PASS = '$Friday345'
+
+
